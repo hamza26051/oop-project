@@ -10,7 +10,7 @@ int main() {
     const int mapwidth = 20;
     const int mapheight = 15;
     const int cellsize = 40;
-    int score = 0;
+    static int score = 0;
 
     std::string pacmanmap[mapheight] = {
         "####################",
@@ -44,7 +44,7 @@ int main() {
 
     Text msg;
     msg.setFont(font);
-    msg.setString("YOU LOST!\n Your Score is:" + to_string(score));
+    
 
     msg.setCharacterSize(24);
     msg.setFillColor(Color::Red);
@@ -100,7 +100,7 @@ int main() {
     bool ispaused = false;
 
     int generatetiming = 0;
-    int cherrytimer = 0;
+
 
     while (window.isOpen()) {
         Event event;
@@ -109,15 +109,18 @@ int main() {
                 window.close();
         }
         bool conditionpriem = false;
-        if ((pacmanx == ghost1x && pacmany == ghost1y) && !conditionpriem ||
-            (pacmanx == ghost2x && pacmany == ghost2y) && !conditionpriem ||
-            (pacmanx == ghost3x && pacmany == ghost3y) && !conditionpriem ||
-            (pacmanx == ghost4x && pacmany == ghost4y) && !conditionpriem) {
+
+        // Check for collisions with ghosts only if cherry effect is not active
+        if ((!conditionpriem && pacmanx == ghost1x && pacmany == ghost1y) ||
+            (!conditionpriem && pacmanx == ghost2x && pacmany == ghost2y) ||
+            (!conditionpriem && pacmanx == ghost3x && pacmany == ghost3y) ||
+            (!conditionpriem && pacmanx == ghost4x && pacmany == ghost4y)) {
             ispaused = true;
         }
-       
-        if (ispaused ) {
+
+        if (ispaused) {
             window.clear(Color(128, 128, 128, 50));
+            msg.setString("YOU LOST!\n Your Score is:" + to_string(score));
             window.draw(msg);
             window.display();
             if (Keyboard::isKeyPressed(Keyboard::Enter)) {
@@ -379,37 +382,47 @@ int main() {
                 pacmanmap[why][ex] = '%';
                 generatetiming = 0;
             }
-
             int cherrytimer = 0;
+
             if (pacmanmap[pacmany][pacmanx] == '%') {
-                conditionpriem = true;
                 pacmanmap[pacmany][pacmanx] = ' ';
-                if (cherrytimer < 50000) {
+
+                if (cherrytimer < 2000) {
                     cherrytimer++;
                     pacManSprite.setScale(0.07f, 0.07f);
+
+                    // Reset ghost positions and timer when collided with Pac-Man after eating cherry
                     if (pacmanx == ghost1x && pacmany == ghost1y) {
                         ghost1x = 18;
                         ghost1y = 1;
                         starttime = 0;
+                        conditionpriem = true;
                     }
                     else if (pacmanx == ghost2x && pacmany == ghost2y) {
                         ghost2x = 18;
                         ghost2y = 1;
                         starttime = 0;
+                        conditionpriem = true;
                     }
                     else if (pacmanx == ghost3x && pacmany == ghost3y) {
                         ghost3x = 18;
                         ghost3y = 1;
                         starttime = 0;
+                        conditionpriem = true;
                     }
                     else if (pacmanx == ghost4x && pacmany == ghost4y) {
                         ghost4x = 18;
                         ghost4y = 1;
                         starttime = 0;
+                        conditionpriem = true;
                     }
                 }
+                else {
+                    // End cherry effect
+                    conditionpriem = false;
+                    pacManSprite.setScale(0.07f, 0.07f);
+                }
             }
-
 
             window.clear();
 
