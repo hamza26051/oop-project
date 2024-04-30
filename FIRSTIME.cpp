@@ -28,7 +28,7 @@ int main() {
         "#####..#..............#..#####",
         "#####..#..............#..#####",
         "0..........#.....#...........0",
-        "####...#....#####.....#...####",
+        "####...#....#...#.....#...####",
         "####...#..............#...####",
         "####.......#######........####",
         "#.............#...............",
@@ -126,11 +126,12 @@ int main() {
     msg.setCharacterSize(24);
     msg.setFillColor(Color::Red);
     msg.setPosition(window.getSize().x / 2 - 150, window.getSize().y / 2 -60);
-    Texture wallTexture, dotTexture,dotbigTexture, pacManTexture, ghost1Texture, ghost4Texture, ghost2Texture, ghost3Texture, cherrytexture;
+    Texture wallTexture, dotTexture,dotbigTexture,pacManupTexture, pacManTexture, ghost1Texture, ghost4Texture, ghost2Texture, ghost3Texture, cherrytexture;
     wallTexture.loadFromFile("textures/neonoutline.png");
     dotTexture.loadFromFile("textures/yellowdot.png");
     dotbigTexture.loadFromFile("textures/yellowdot.png");
     pacManTexture.loadFromFile("textures/pacman.png");
+    pacManupTexture.loadFromFile("textures/pacmanup.png");
     ghost1Texture.loadFromFile("textures/ghost1.png");
     ghost2Texture.loadFromFile("textures/pngegg.png");
     ghost3Texture.loadFromFile("textures/ghost3.png");
@@ -147,6 +148,7 @@ int main() {
     Sprite ghost2Sprite(ghost2Texture);
     Sprite ghost3Sprite(ghost3Texture);
     Sprite ghost4Sprite(ghost4Texture);
+    Sprite pacmanupSprite(pacManupTexture);
 
     int ghost1x = 15;
     int ghost1y = 10;
@@ -238,7 +240,7 @@ int main() {
 
             window.draw(winmsg);
             window.display();
-            if (Keyboard::isKeyPressed(Keyboard::Enter)) {
+            if (Keyboard::isKeyPressed(Keyboard::Escape)) {
                 break;
             }
         }
@@ -390,7 +392,7 @@ int main() {
                 msg.setString("YOU LOST!\nYour Score is:" + to_string(score) + " \n\n\n\n\npress Esc to continue");
                 window.draw(msg);
                 window.display();
-                if (Keyboard::isKeyPressed(Keyboard::Enter)) {
+                if (Keyboard::isKeyPressed(Keyboard::Escape)) {
                     break;
                 }
             }
@@ -409,7 +411,7 @@ int main() {
                 int random1, random2, random3, random4;
 
                 static int movementTimer = 0;
-                static const int movementInterval = FPS * 10;
+                static const int movementInterval = FPS * 8;
                 static int previousmove1 = -1;
                 static int previousmove2 = -1;
                 static int previousmove3 = -1;
@@ -637,6 +639,7 @@ int main() {
                 if (Keyboard::isKeyPressed(Keyboard::Right) && !rightPressed && pacmanx < mapwidth - 1 && pacmanmap[pacmany][pacmanx + 1] != '#' && !gamenotready) {
                     pacmanx++;
                     rightPressed = true;
+
                 }
                 else if (!Keyboard::isKeyPressed(Keyboard::Right)) {
                     rightPressed = false;
@@ -645,6 +648,7 @@ int main() {
                 if (Keyboard::isKeyPressed(Keyboard::Up) && !upPressed && pacmany > 0 && pacmanmap[pacmany - 1][pacmanx] != '#' && !gamenotready) {
                     pacmany--;
                     upPressed = true;
+                  
                 }
                 else if (!Keyboard::isKeyPressed(Keyboard::Up)) {
                     upPressed = false;
@@ -700,8 +704,7 @@ int main() {
 
                 }
                 
-
-                pacManSprite.setPosition(pacmanx * cellsize, pacmany * cellsize);
+                pacManSprite.setPosition(pacmanx* cellsize, pacmany* cellsize);
                 window.draw(pacManSprite);
             
                     ghost1Sprite.setPosition(ghost1x * cellsize, ghost1y * cellsize);
